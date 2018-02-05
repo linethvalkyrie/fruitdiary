@@ -1,0 +1,10 @@
+framework module braySdkframework {
+  umbrella header "braySdkframework.h"
+
+  export *
+  module * { export * }
+}
+
+module braySdkframework.Swift {
+    header "braySdkframework-Swift.h"
+}
