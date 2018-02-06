@@ -40,12 +40,10 @@ class DetailsViewController: UITableViewController {
         }
     }
     
-    var sectionItems: Array<Any> = []
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print(itemData)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(dismissView))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -59,17 +57,11 @@ class DetailsViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    func dismissView() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     func downloadImage(imageName:String, cell:SelectionViewCell) {
-        
-        var imageDirectory:String = ""
-        
-//        if let filterIndex = objects.index(where: {$0["type"] as! String == imageName}) {
-//            print(filterIndex)
-//            imageDirectory = imageName
-//        }
-//        else {
-//            print("Item not found")
-//        }
         
         let url = URL(string:"https://fruitdiary.test.themobilelife.com/images/" + imageName + ".png")
         
@@ -83,7 +75,6 @@ class DetailsViewController: UITableViewController {
                     if let imageData = data {
                         print(res)
                         cell.fImage.image = UIImage(data: imageData)
-//                        cell.loadIcon.isHidden = true;
                     } else {
                         print("Couldn't get image: Image is nil")
                     }
@@ -117,21 +108,21 @@ class DetailsViewController: UITableViewController {
             cell.fId.text = "Id: " + String(describing:eId)
             cell.fType.text = "Type: " + String(describing:eType)
             cell.fVit.text = "Vitamin count: " + String(describing:eVit)
+            cell.fConsumed.text = ""
             
-            if let filterIndex = entryData.index(where: {$0["fruitType"] as! String == String(describing:eType)}) {
-                print(filterIndex)
-                
-                for dict:Dictionary<String,Any> in entryData {
-                    for dic:Array<Dictionary<String,Any>> in dict["fruit"] {
-                        print(dic)
+            for d: [String:Any] in entryData {
+                if entryDate == d["date"] as! String
+                {
+                    for fruitData: [String:Any] in d["fruit"] as! Array<[String:Any]>{
+                        if fruitData["fruitType"] as! String == String(describing:eType) {
+                            print("EXIST")
+                            cell.fConsumed.text = "Consumed: \(fruitData["amount"] as! Int)"
+                        }
                     }
                 }
-                cell.fConsumed.text = "Consumed: "
+//                print("this: \(d)")
             }
-            else {
-                print("Item not found")
-            }
-
+            
             
             downloadImage(imageName: String(describing:eType), cell: cell)
         }
@@ -140,5 +131,9 @@ class DetailsViewController: UITableViewController {
         }
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
     }
 }

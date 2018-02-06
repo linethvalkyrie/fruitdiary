@@ -121,27 +121,35 @@ class EditDetailsVIewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let deleteItem = String(describing:entryId[indexPath.row])
             
-            entryId.remove(at: indexPath.row)
+            let refreshAlert = UIAlertController(title: "Delete Entry", message: "Are you sure?", preferredStyle: UIAlertControllerStyle.alert)
             
-            DispatchQueue.global(qos: .userInitiated).async {
-                let task = "entry/" + deleteItem
+            refreshAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
+                let deleteItem = String(describing:self.entryId[indexPath.row])
                 
-                let result = MobileInterface().deleteDataFromTaskOnly(task as NSString)
+                self.entryId.remove(at: indexPath.row)
                 
-                
-                DispatchQueue.main.async {
-                    if (self.entryId.count > 0) {
-                        tableView.deleteRows(at: [indexPath], with: .fade)
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let task = "entry/" + deleteItem
+                    
+                    let result = MobileInterface().deleteDataFromTaskOnly(task as NSString)
+                    
+                    
+                    DispatchQueue.main.async {
+                        if (self.entryId.count > 0) {
+                            tableView.deleteRows(at: [indexPath], with: .fade)
+                        }
                     }
-                    else {
-                        
-                    }
-//                    print(result)
+                    
                 }
+            }))
+            
+            refreshAlert.addAction(UIAlertAction(title: "No", style: .cancel, handler: { (action: UIAlertAction!) in
                 
-            }
+            }))
+            
+            present(refreshAlert, animated: true, completion: nil)
+            
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
         }
@@ -158,7 +166,7 @@ class EditDetailsVIewController: UITableViewController {
                     let indexPath = tableView.indexPathForSelectedRow
                     let selectedCell = tableView.cellForRow(at: indexPath!) as! EntryTableViewCell
                     destinationViewCon.entryDate = (selectedCell.passDate)!
-                    destinationViewCon.entryData = entryData
+                    destinationViewCon.dataE = entryData
                 }
                 else {
                     print("no view controller captured")
