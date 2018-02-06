@@ -8,6 +8,14 @@
 
 import UIKit
 import braySdkframework
+import Foundation
+
+extension NSCache {
+    class var sharedInstance: NSCache<NSString, AnyObject> {
+        let cache = NSCache<NSString, AnyObject>()
+        return cache
+    }
+}
 
 class SelectionViewCell: UITableViewCell {
     @IBOutlet var fId: UILabel!
@@ -34,19 +42,10 @@ class DetailsViewController: UITableViewController {
         }
     }
     
-    var itemData: Array<Dictionary<String,Any>> = []
-    var data: Array<Dictionary<String,Any>> = [] {
-        didSet{
-            itemData = data
-        }
-    }
+    let imageCache = NSCache<AnyObject, AnyObject>.sharedInstance
     
+    var itemData: Array<Dictionary<String,Any>> = []
     var entryData: Array<Dictionary<String,Any>> = []
-    var dataE: Array<Dictionary<String,Any>> = [] {
-        didSet{
-            entryData = dataE
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,10 +53,12 @@ class DetailsViewController: UITableViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(dismissView))
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         navigationItem.title = "Add Fruit on Entry: " + entryDate
+        
+        getFruitData()
     }
     
     override func didReceiveMemoryWarning() {
@@ -66,7 +67,10 @@ class DetailsViewController: UITableViewController {
     }
     
     func dismissView() {
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true, completion: {
+            self.entryData.removeAll()
+            self.itemData.removeAll()
+        })
     }
     
     func getFruitData() {
@@ -100,24 +104,52 @@ class DetailsViewController: UITableViewController {
         
         let session = URLSession(configuration: .default)
         
-        let downloadPicTask = session.dataTask(with: url!) { (data, response, error) in
-            if let e = error {
-                print("Error downloading picture: \(e)")
-            } else {
-                if let res = response as? HTTPURLResponse {
-                    if let imageData = data {
-                        print(res)
-                        cell.fImage.image = UIImage(data: imageData)
-                    } else {
-                        print("Couldn't get image: Image is nil")
-                    }
-                } else {
-                    print("Couldn't get response code for some reason")
+        if let _ = url {
+            let cacheImage = imageCache.object(forKey:imageName as NSString)
+            
+            if cacheImage != nil {
+                cell.fImage.image = cacheImage as? UIImage
+                
+                if cell.fImage.image != nil {
+                    cell.loadIcon.isHidden = true;
                 }
+                
+                cell.fImage.isHidden = false;
+            }
+            else {
+                let downloadPicTask = session.dataTask(with: url!) { (data, response, error) in
+                    if let e = error {
+                        print("Error downloading picture: \(e)")
+                    } else {
+                        if let res = response as? HTTPURLResponse {
+                            if let imageData = data {
+                                
+                                let imageToCache = UIImage(data: imageData)
+                                
+                                print(res)
+                                cell.fImage.image = imageToCache
+                                
+                                if url != nil {
+                                    self.imageCache.setObject(imageToCache!, forKey: imageName as NSString, cost:1)
+                                }
+                                
+                                if cell.fImage.image != nil {
+                                    cell.loadIcon.isHidden = true;
+                                }
+                                
+                                cell.fImage.isHidden = false;
+                            } else {
+                                print("Couldn't get image: Image is nil")
+                            }
+                        } else {
+                            print("Couldn't get response code for some reason")
+                        }
+                    }
+                }
+                
+                downloadPicTask.resume()
             }
         }
-        
-        downloadPicTask.resume()
     }
     
     // ---------------------------------
@@ -125,7 +157,20 @@ class DetailsViewController: UITableViewController {
     // ---------------------------------
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemData.count
+        if itemData.count > 0 {
+            tableView.backgroundView = nil
+            return itemData.count
+        }
+        else {
+            let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.bounds.size.width, height: view.bounds.size.height))
+            messageLabel.text = "Retrieving data.\nPlease wait."
+            messageLabel.numberOfLines = 0;
+            messageLabel.textAlignment = .center;
+            messageLabel.font = UIFont(name: "HelveticaNeue", size: 20.0)!
+            messageLabel.sizeToFit()
+            tableView.backgroundView = messageLabel;
+        }
+        return 0;
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -136,6 +181,9 @@ class DetailsViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "entryFruit") as! SelectionViewCell
         
         let items = self.itemData[indexPath.row]
+        
+        cell.loadIcon.isHidden = false
+        cell.fImage.isHidden = true
         
         if let eId = items["id"], let eType = items["type"], let eVit = items["vitamins"]  {
             cell.fId.text = "Id: " + String(describing:eId)

@@ -12,13 +12,16 @@ import braySdkframework
 class FruitsTableViewCell: UITableViewCell {
     @IBOutlet var fruitsType: UILabel!
     @IBOutlet var fruitCount: UILabel!
-    @IBOutlet var vitaminCount: UILabel!
     @IBOutlet var fruitImage: UIImageView!
     @IBOutlet var loadIcon: UIActivityIndicatorView!
 }
 
-class FirstViewController: UITableViewController {
+class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    @IBOutlet weak var loadingActivityView: UIView!
+    @IBOutlet weak var entryListTbl: UITableView!
+    
+    let imageCache = NSCache<AnyObject, AnyObject>.sharedInstance
     
     var collapseDetailViewController: Bool = false
     let kHeaderSectionTag: Int = 6900;
@@ -27,23 +30,27 @@ class FirstViewController: UITableViewController {
     var expandedSectionHeader: UITableViewHeaderFooterView!
     var sectionItems: Array<Any> = []
     var sectionNames: Array<Any> = []
-    var vitaminCo: Array<Any> = []
-    var fruitProfile: Array<Any> = []
+    var dateString : String!
     
     @IBOutlet weak var loadingView: UIView!
+    
+    let datepicker = UIDatePicker()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
-        navigationItem.rightBarButtonItem = addButton
+        entryListTbl.delegate = self
+        entryListTbl.dataSource = self
+        
+//        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
+//        navigationItem.rightBarButtonItem = addButton
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        getFruitData()
+        getUserData()
     }
 
     override func didReceiveMemoryWarning() {
@@ -51,35 +58,82 @@ class FirstViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    func dateChanged(_ datePicker: UIDatePicker) {
+        print("DATE :: \(datePicker.date)")
+    }
+    
+    @IBAction func showDatePicker(_ sender: UIButton) {
+        let datePicker = UIDatePicker()//Date picker
+        datePicker.frame = CGRect(x: 0, y: 100, width: 320, height: 216)
+        datePicker.datePickerMode = .dateAndTime
+        datePicker.minuteInterval = 5
+        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+        
+        let popoverView = UIView()
+        popoverView.backgroundColor = UIColor.clear
+        popoverView.addSubview(datePicker)
+        // here you can add tool bar with done and cancel buttons if required
+        
+        let popoverViewController = UIViewController()
+        popoverViewController.view = popoverView
+        popoverViewController.view.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
+        popoverViewController.modalPresentationStyle = .popover
+        popoverViewController.preferredContentSize = CGSize(width: 320, height: 216)
+        popoverViewController.popoverPresentationController?.sourceView = sender // source button
+        popoverViewController.popoverPresentationController?.sourceRect = sender.bounds // source button bounds
+        self.present(popoverViewController, animated: true, completion: nil)
+    }
+    
+//    func layout(){
+//        let floaty = Floaty()
+//        let currentWindow = UIApplication.shared.keyWindow
+//        let fab = floaty(frame: CGRect(x: CGFloat(self.view.frame.size.width - 80), y: CGFloat(self.view.frame.size.height - 180), width: CGFloat(50), height: CGFloat(50)))
+//        fab.buttonColor = UIColor().HexToColor(hexString: accentColor)
+//        fab.plusColor = UIColor.white;
+//        fab.addItem(self.globalObjectCatalogProduct.languageBundle.localizedString(forKey: "sharetoother", value: "", table: nil), icon: UIImage(named: "icShare")){ item in
+//            self.sharetoOther();
+//        }
+//        fab.addItem(self.globalObjectCatalogProduct.languageBundle.localizedString(forKey: "addyourreview", value: "", table: nil), icon: UIImage(named: "ic_add_review")){ item in
+//            self.performSegue(withIdentifier: "addReviewSegue", sender: self)
+//        }
+//        fab.addItem(self.globalObjectCatalogProduct.languageBundle.localizedString(forKey: "addtowishlist", value: "", table: nil), icon: UIImage(named: "ic_wishlist_pdf")){ item in
+//            self.addToWishlist();
+//        }
+//        
+//        fab.fabDelegate = self
+//        fab.tag = 1300;
+//        currentWindow?.addSubview(fab)
+//    }
+    
     func insertNewObject(_ sender: Any) {
-        let date : Date = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let todaysDate = dateFormatter.string(from: date)
-        let task = "entries"
         
-        let params:NSMutableDictionary = ["task":task,"date":todaysDate]
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            let res = MobileInterface().getDataFromTask(params)
-            
-            DispatchQueue.main.async {
-                print(res)
-                
-                if let message = res["message"] {
-                    let alert = UIAlertController(title: todaysDate, message: message as? String, preferredStyle: UIAlertControllerStyle.alert)
-                    alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
-                    self.present(alert, animated: true, completion: nil)
-                }
-                
-                self.getFruitData()
-            }
-        }
+//        let date : Date = Date()
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd"
+//        let todaysDate = dateFormatter.string(from: date)
+//        let task = "entries"
+//        
+//        let params:NSMutableDictionary = ["task":task,"date":todaysDate]
+//        
+//        DispatchQueue.global(qos: .userInitiated).async {
+//            let res = MobileInterface().getDataFromTask(params)
+//            
+//            DispatchQueue.main.async {
+//                print(res)
+//                
+//                if let message = res["message"] {
+//                    let alert = UIAlertController(title: todaysDate, message: message as? String, preferredStyle: UIAlertControllerStyle.alert)
+//                    alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+//                    self.present(alert, animated: true, completion: nil)
+//                }
+//                
+//                self.getUserData()
+//            }
+//        }
     }
     
     var dataArray: Array<Dictionary<String,Any>> = []
     var itemsArray: Array<Dictionary<String,Any>> = []
-    var selectedEntry: Array<Dictionary<String,Any>> = []
     
     func downloadImage(imageName:String, cell:FruitsTableViewCell) {
         
@@ -97,31 +151,55 @@ class FirstViewController: UITableViewController {
         
         let session = URLSession(configuration: .default)
         
-        let downloadPicTask = session.dataTask(with: url!) { (data, response, error) in
-            if let e = error {
-                print("Error downloading picture: \(e)")
-            } else {
-                if let res = response as? HTTPURLResponse {
-                    if let imageData = data {
-                        print(res)
-                        cell.fruitImage.image = UIImage(data: imageData)
-                        cell.loadIcon.isHidden = true;
-                    } else {
-                        print("Couldn't get image: Image is nil")
-                    }
-                } else {
-                    print("Couldn't get response code for some reason")
+        if let _ = url {
+            let cacheImage = imageCache.object(forKey:imageDirectory as NSString)
+            
+            if cacheImage != nil {
+                cell.fruitImage.image = cacheImage as? UIImage
+                
+                if cell.fruitImage.image != nil {
+                    cell.loadIcon.isHidden = true;
                 }
+                
+                cell.fruitImage.isHidden = false;
+            }
+            else {
+                let downloadPicTask = session.dataTask(with: url!) { (data, response, error) in
+                    if let e = error {
+                        print("Error downloading picture: \(e)")
+                    } else {
+                        if let res = response as? HTTPURLResponse {
+                            if let imageData = data {
+                                
+                                let imageToCache = UIImage(data: imageData)
+                                
+                                print(res)
+                                cell.fruitImage.image = imageToCache
+                                
+                                if url != nil {
+                                    self.imageCache.setObject(imageToCache!, forKey: imageDirectory as NSString, cost:1)
+                                }
+                                
+                                if cell.fruitImage.image != nil {
+                                    cell.loadIcon.isHidden = true;
+                                }
+                                
+                                cell.fruitImage.isHidden = false;
+                            } else {
+                                print("Couldn't get image: Image is nil")
+                            }
+                        } else {
+                            print("Couldn't get response code for some reason")
+                        }
+                    }
+                }
+                
+                downloadPicTask.resume()
             }
         }
-                
-        downloadPicTask.resume()
     }
     
     func getFruitData() {
-        fruitProfile.removeAll()
-        vitaminCo.removeAll()
-//        loadingView.isHidden = false;
         
         let task = "fruit"
         
@@ -129,29 +207,19 @@ class FirstViewController: UITableViewController {
             self.itemsArray = MobileInterface().getDataFromTaskOnly(task as NSString) as! Array<Dictionary<String,Any>>
             
             DispatchQueue.main.async {
-                for dict:Dictionary<String,Any> in self.itemsArray {
-                    if (dict.count > 0) {
-                        
-                        self.fruitProfile.append(dict)
-                        
-                        if let vitCount = dict["vitamins"] {
-                            
-                            //                    print(vitCount)
-                            self.vitaminCo.append(vitCount)
-                            
-                            
-                        }
-                    }
-                }
-                
-                self.getUserData()
+                print(self.itemsArray)
+                self.entryListTbl.reloadData()
+                self.loadingActivityView.isHidden = true;
             }
         }
     }
     
     func getUserData() {
+//        loadingActivityView.isHidden = true;
+        
         sectionItems.removeAll()
         sectionNames.removeAll()
+        
         let task = "entries"
         
         DispatchQueue.global(qos: .userInitiated).async {
@@ -171,9 +239,7 @@ class FirstViewController: UITableViewController {
                         }
                     }
                 }
-//                self.loadingView.isHidden = true;
-                
-                self.tableView.reloadData()
+                self.getFruitData()
             }
         }
     }
@@ -181,9 +247,9 @@ class FirstViewController: UITableViewController {
     // ---------------------------------
     // MARK: UITABLEVIEW METHODS
     // ---------------------------------
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         if sectionNames.count > 0 {
-            tableView.backgroundView = nil
+            entryListTbl.backgroundView = nil
             return sectionNames.count
         } else {
             let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.bounds.size.width, height: view.bounds.size.height))
@@ -192,37 +258,37 @@ class FirstViewController: UITableViewController {
             messageLabel.textAlignment = .center;
             messageLabel.font = UIFont(name: "HelveticaNeue", size: 20.0)!
             messageLabel.sizeToFit()
-            self.tableView.backgroundView = messageLabel;
+            entryListTbl.backgroundView = messageLabel;
         }
         return 0
     }
 
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (self.expandedSectionHeaderNumber == section) {
-            let arrayOfItems = self.sectionItems[section] as! NSArray
+            let arrayOfItems = sectionItems[section] as! NSArray
             return arrayOfItems.count
         } else {
             return 0
         }
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if (self.sectionNames.count != 0) {
-            return self.sectionNames[section] as? String
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if (sectionNames.count != 0) {
+            return sectionNames[section] as? String
         }
         return ""
     }
     
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 60.0
     }
     
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat{
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat{
         return 0
     }
     
-    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         //recast your view as a UITableViewHeaderFooterView
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
 //        header.contentView.backgroundColor = UIColor.colorWithHexString(hexStr: "#408000")
@@ -233,7 +299,7 @@ class FirstViewController: UITableViewController {
             viewWithTag.removeFromSuperview()
         }
         let headerFrame = self.view.frame.size
-        let theImageView = UIImageView(frame: CGRect(x: headerFrame.width - 32, y: 13, width: 18, height: 18));
+        let theImageView = UIImageView(frame: CGRect(x: headerFrame.width - 32, y: 20, width: 18, height: 18));
         theImageView.image = UIImage(named: "Chevron-Dn-Wht")
         theImageView.tag = kHeaderSectionTag + section
         header.addSubview(theImageView)
@@ -245,40 +311,29 @@ class FirstViewController: UITableViewController {
         header.addGestureRecognizer(headerTapGesture)
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 84
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        let cell = tableView.dequeueReusableCell(withIdentifier: "fruits") as! FruitsTableViewCell
-        let section = self.sectionItems[indexPath.section] as! Array<Dictionary<String,Any>>
+        let cell = entryListTbl.dequeueReusableCell(withIdentifier: "entryListCell") as! FruitsTableViewCell
+        let section = sectionItems[indexPath.section] as! Array<Dictionary<String,Any>>
         
-        cell.backgroundColor = UIColor.lightGray
+        cell.backgroundColor = UIColor.black
         
         
-        if (cell.loadIcon.isHidden) {
-            cell.loadIcon.isHidden = true;
-        }
+        cell.loadIcon.isHidden = false;
+        cell.fruitImage.isHidden = true;
 
         if let fType = section[indexPath.row]["fruitType"], let fCount = section[indexPath.row]["amount"] {
             //            print(fType)
-            cell.fruitsType.textColor = UIColor.black
+            cell.fruitsType.textColor = UIColor.white
             cell.fruitsType.text = "item: " + String(describing:fType)
             
             //            print(fCount)
-            cell.fruitCount.textColor = UIColor.black
+            cell.fruitCount.textColor = UIColor.white
             cell.fruitCount.text = "item count: " + String(describing:fCount)
-            
-            
-            if let filterIndex = itemsArray.index(where: {$0["type"] as! String == fType as! String}) {
-                print(fType)
-                cell.vitaminCount.textColor = UIColor.black
-                cell.vitaminCount.text = "vitamin count: " + String(describing:vitaminCo[filterIndex])
-            }
-            else {
-                print("Item not found")
-            }
             
             downloadImage(imageName: fType as! String, cell: cell)
         }
@@ -288,8 +343,8 @@ class FirstViewController: UITableViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        entryListTbl.deselectRow(at: indexPath, animated: true)
     }
     
     // MARK: - Expand / Collapse Methods
@@ -328,9 +383,9 @@ class FirstViewController: UITableViewController {
                 let index = IndexPath(row: i, section: section)
                 indexesPath.append(index)
             }
-            self.tableView!.beginUpdates()
-            self.tableView!.deleteRows(at: indexesPath, with: UITableViewRowAnimation.fade)
-            self.tableView!.endUpdates()
+            self.entryListTbl!.beginUpdates()
+            self.entryListTbl!.deleteRows(at: indexesPath, with: UITableViewRowAnimation.fade)
+            self.entryListTbl!.endUpdates()
         }
     }
     
@@ -354,9 +409,9 @@ class FirstViewController: UITableViewController {
                 indexesPath.append(index)
             }
             self.expandedSectionHeaderNumber = section
-            self.tableView!.beginUpdates()
-            self.tableView!.insertRows(at: indexesPath, with: UITableViewRowAnimation.fade)
-            self.tableView!.endUpdates()
+            self.entryListTbl!.beginUpdates()
+            self.entryListTbl!.insertRows(at: indexesPath, with: UITableViewRowAnimation.fade)
+            self.entryListTbl!.endUpdates()
         }
     }
 
@@ -366,9 +421,7 @@ class FirstViewController: UITableViewController {
         if segue.identifier == "showDetail" {
               
             if let destinationNavCon = segue.destination as? UINavigationController{
-                if let destinationViewCon = destinationNavCon.viewControllers[0] as? EditDetailsVIewController {
-                    destinationViewCon.data = dataArray
-                    destinationViewCon.itemData = itemsArray
+                if let _ = destinationNavCon.viewControllers[0] as? EditDetailsVIewController {
                 }
                 else {
                     print("no view controller captured")

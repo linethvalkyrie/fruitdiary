@@ -18,19 +18,7 @@ class EntryTableViewCell: UITableViewCell {
 
 class EditDetailsVIewController: UITableViewController {
     
-    var itemData: Array<Dictionary<String,Any>> = []
-    var itData: Array<Dictionary<String,Any>> = [] {
-        didSet{
-            itemData = itData
-        }
-    }
-    
     var entryData: Array<Dictionary<String,Any>> = []
-    var data: Array<Dictionary<String,Any>> = [] {
-        didSet{
-            entryData = data
-        }
-    }
     
     var entryDate: Array<Any> = []
     var entryId: Array<Any> = []
@@ -44,23 +32,9 @@ class EditDetailsVIewController: UITableViewController {
         navigationItem.rightBarButtonItem = editButtonItem
     }
     
-    func defineData() {
-        
-        for dic:Dictionary<String,Any> in entryData {
-            if let eDate = dic["date"], let eId = dic["id"], let eFruit = dic["fruit"] {
-                entryDate.append(eDate)
-                
-                entryId.append(eId)
-                
-                entryFruit.append(eFruit)
-            }
-        }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        defineData()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        getUserData()
     }
     
     override func didReceiveMemoryWarning() {
@@ -71,8 +45,35 @@ class EditDetailsVIewController: UITableViewController {
     
     @IBAction func dismissView() {
         self.dismiss(animated: true, completion: {
-           self.entryData.removeAll()
+//            self.entryData.removeAll()
         });
+    }
+    
+    func getUserData() {
+        self.entryData.removeAll()
+        self.entryDate.removeAll()
+        self.entryId.removeAll()
+        self.entryFruit.removeAll()
+        
+        let task = "entries"
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.entryData = MobileInterface().getDataFromTaskOnly(task as NSString) as! Array<Dictionary<String, Any>>
+            
+            DispatchQueue.main.async {
+                for dic:Dictionary<String,Any> in self.entryData {
+                    
+                    if let eDate = dic["date"], let eId = dic["id"], let eFruit = dic["fruit"] {
+                        self.entryDate.append(eDate)
+                        
+                        self.entryId.append(eId)
+                        
+                        self.entryFruit.append(eFruit)
+                    }
+                }
+                self.tableView.reloadData()
+            }
+        }
     }
     
     
@@ -81,7 +82,20 @@ class EditDetailsVIewController: UITableViewController {
     // ---------------------------------
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return entryId.count
+        if entryId.count > 0 {
+            tableView.backgroundView = nil
+            return entryId.count
+        }
+        else {
+            let messageLabel = UILabel(frame: CGRect(x: 0, y: 0, width: view.bounds.size.width, height: view.bounds.size.height))
+            messageLabel.text = "Retrieving data.\nPlease wait."
+            messageLabel.numberOfLines = 0;
+            messageLabel.textAlignment = .center;
+            messageLabel.font = UIFont(name: "HelveticaNeue", size: 20.0)!
+            messageLabel.sizeToFit()
+            tableView.backgroundView = messageLabel;
+        }
+        return 0;
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -162,12 +176,10 @@ class EditDetailsVIewController: UITableViewController {
             
             if let destinationNavCon = segue.destination as? UINavigationController{
                 if let destinationViewCon = destinationNavCon.viewControllers[0] as? DetailsViewController {
-                    destinationViewCon.data = itemData
                     let indexPath = tableView.indexPathForSelectedRow
                     let selectedCell = tableView.cellForRow(at: indexPath!) as! EntryTableViewCell
                     destinationViewCon.entryDate = (selectedCell.passDate)!
                     destinationViewCon.entryId = selectedCell.passEntryId
-                    destinationViewCon.dataE = entryData
                 }
                 else {
                     print("no view controller captured")
