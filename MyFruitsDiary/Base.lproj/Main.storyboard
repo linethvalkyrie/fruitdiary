@@ -91,7 +91,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="My Fruit Diary" id="oSL-KI-YCg">
-                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="YlU-4f-B1D">
+                        <barButtonItem key="leftBarButtonItem" title="List" id="YlU-4f-B1D">
                             <connections>
                                 <segue destination="kVD-8X-Rno" kind="showDetail" identifier="showDetail" id="IK5-pu-AwL"/>
                             </connections>

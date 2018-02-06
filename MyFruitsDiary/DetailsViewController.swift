@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import braySdkframework
 
 class SelectionViewCell: UITableViewCell {
     @IBOutlet var fId: UILabel!
@@ -23,6 +24,13 @@ class DetailsViewController: UITableViewController {
     var selectedDate = String() {
         didSet{
             entryDate = selectedDate
+        }
+    }
+    
+    var entryId = String()
+    var selectedEntryId = String() {
+        didSet{
+            entryId = selectedEntryId
         }
     }
     
@@ -59,6 +67,31 @@ class DetailsViewController: UITableViewController {
     
     func dismissView() {
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    func getFruitData() {
+        
+        let task = "fruit"
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.itemData = MobileInterface().getDataFromTaskOnly(task as NSString) as! Array<Dictionary<String,Any>>
+            
+            DispatchQueue.main.async {
+                self.getUserData()
+            }
+        }
+    }
+    
+    func getUserData() {
+        let task = "entries"
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.entryData = MobileInterface().getDataFromTaskOnly(task as NSString) as! Array<Dictionary<String, Any>>
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
     }
     
     func downloadImage(imageName:String, cell:SelectionViewCell) {
@@ -134,6 +167,59 @@ class DetailsViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let items = self.itemData[indexPath.row]
+        
+        var tField: UITextField!
+        
+        if let eId = items["id"], let eType = items["type"] {
+            
+            
+            func configurationTextField(textField: UITextField!)
+            {
+                print("generating the TextField")
+                textField.placeholder = "Enter amount consumed"
+                textField.keyboardType = .numberPad
+                tField = textField
+            }
+            
+            func handleCancel(alertView: UIAlertAction!)
+            {
+                print("Cancelled !!")
+            }
+            
+            let alert = UIAlertController(title: "Add \(eType)", message: "", preferredStyle: .alert)
+            
+            alert.addTextField(configurationHandler: configurationTextField)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler:handleCancel))
+            alert.addAction(UIAlertAction(title: "Add", style: .default, handler:{ (UIAlertAction) in
+                print("Done !!")
+                
+                print("Item : \(String(describing: tField.text))")
+                
+                if let amountVal = tField.text {
+                    
+                    let task = "entry/\(self.entryId)/fruit/\(eId)?amount=\(amountVal)"
+                    
+                    let params:NSMutableDictionary = ["task":task]
+                    
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        
+                        let result = MobileInterface().getDataFromTask(params)
+                        
+                        DispatchQueue.main.async {
+                            print(result)
+                            self.getFruitData()
+                        }
+                    }
+                }
+                
+            }))
+            self.present(alert, animated: true, completion: {
+                print("completion block")
+            })
+
+        }
         
     }
 }

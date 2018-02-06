@@ -13,6 +13,7 @@ class EntryTableViewCell: UITableViewCell {
     @IBOutlet var entryId: UILabel!
     @IBOutlet var entryDate: UILabel!
     var passDate: String!
+    var passEntryId: String!
 }
 
 class EditDetailsVIewController: UITableViewController {
@@ -41,10 +42,6 @@ class EditDetailsVIewController: UITableViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(dismissView))
         
         navigationItem.rightBarButtonItem = editButtonItem
-        
-//        defineData()
-        
-//        print(objects)
     }
     
     func defineData() {
@@ -102,6 +99,8 @@ class EditDetailsVIewController: UITableViewController {
             cell.entryDate.text = "Date: " + String(describing:eDate)
             
             cell.passDate = String(describing:eDate)
+            
+            cell.passEntryId = String(describing:eId)
         }
         else {
             cell.entryId.text = "no data"
@@ -109,6 +108,8 @@ class EditDetailsVIewController: UITableViewController {
             cell.entryDate.text = "no data"
             
             cell.passDate = "no data"
+            
+            cell.passEntryId = "no data"
         }
         
         return cell
@@ -132,8 +133,7 @@ class EditDetailsVIewController: UITableViewController {
                 DispatchQueue.global(qos: .userInitiated).async {
                     let task = "entry/" + deleteItem
                     
-                    let result = MobileInterface().deleteDataFromTaskOnly(task as NSString)
-                    
+                    let _ = MobileInterface().deleteDataFromTaskOnly(task as NSString)
                     
                     DispatchQueue.main.async {
                         if (self.entryId.count > 0) {
@@ -166,6 +166,7 @@ class EditDetailsVIewController: UITableViewController {
                     let indexPath = tableView.indexPathForSelectedRow
                     let selectedCell = tableView.cellForRow(at: indexPath!) as! EntryTableViewCell
                     destinationViewCon.entryDate = (selectedCell.passDate)!
+                    destinationViewCon.entryId = selectedCell.passEntryId
                     destinationViewCon.dataE = entryData
                 }
                 else {

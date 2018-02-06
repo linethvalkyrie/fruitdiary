@@ -281,8 +281,6 @@ class FirstViewController: UITableViewController {
             }
             
             downloadImage(imageName: fType as! String, cell: cell)
-            
-            
         }
 
         
@@ -364,31 +362,26 @@ class FirstViewController: UITableViewController {
 
     // MARK: - Segues
     
-        override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-            if segue.identifier == "showDetail" {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showDetail" {
               
-                if let destinationNavCon = segue.destination as? UINavigationController{
-                    if let destinationViewCon = destinationNavCon.viewControllers[0] as? EditDetailsVIewController {
-                        destinationViewCon.data = dataArray
-                        destinationViewCon.itemData = itemsArray
-                    }
-                    else {
-                        print("no view controller captured")
-                    }
+            if let destinationNavCon = segue.destination as? UINavigationController{
+                if let destinationViewCon = destinationNavCon.viewControllers[0] as? EditDetailsVIewController {
+                    destinationViewCon.data = dataArray
+                    destinationViewCon.itemData = itemsArray
                 }
                 else {
-                    print("Data not passed")
+                    print("no view controller captured")
                 }
             }
             else {
-                print("no segue captured")
+                print("Data not passed")
             }
         }
+        else {
+            print("no segue captured")
+        }
+    }
     
-    // MARK: - UISplitViewControllerDelegate
-    
-//    func splitViewController(splitViewController: UISplitViewController, collapseSecondaryViewController secondaryViewController: UIViewController, ontoPrimaryViewController primaryViewController: UIViewController) -> Bool {
-//        return true
-//    }
 }
 
