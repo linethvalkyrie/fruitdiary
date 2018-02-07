@@ -55,8 +55,6 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         entryListTbl.delegate = self
         entryListTbl.dataSource = self
         
-//        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
-//        navigationItem.rightBarButtonItem = addButton
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -92,7 +90,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func handleGesture(gesture: UISwipeGestureRecognizer) -> Void {
         if gesture.direction == UISwipeGestureRecognizerDirection.down {
-            print("Swipe Down")
+//            print("Swipe Down")
             self.dateTextField.resignFirstResponder()
             self.dateView.isHidden = true
         }
@@ -196,12 +194,12 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         var imageDirectory:String = ""
         
-        if let filterIndex = itemsArray.index(where: {$0["type"] as! String == imageName}) {
-            print(filterIndex)
+        if let _ = itemsArray.index(where: {$0["type"] as! String == imageName}) {
+//            print(filterIndex)
             imageDirectory = imageName
         }
         else {
-            print("Item not found")
+//            print("Item not found")
         }
         
         let url = URL(string:"https://fruitdiary.test.themobilelife.com/images/" + imageDirectory + ".png")
