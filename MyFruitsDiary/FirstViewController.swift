@@ -31,14 +31,26 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var sectionItems: Array<Any> = []
     var sectionNames: Array<Any> = []
     var dateString : String!
+    var roundButton = UIButton()
     
     @IBOutlet weak var loadingView: UIView!
     
-    let datepicker = UIDatePicker()
+    let datePicker = UIDatePicker()
 
+    @IBOutlet weak var dateView: UIView!
+    @IBOutlet weak var dateTextField: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        self.roundButton = UIButton(type: .custom)
+        self.roundButton.setTitleColor(UIColor.orange, for: .normal)
+        self.roundButton.addTarget(self, action: #selector(ButtonClick(_:)), for: UIControlEvents.touchUpInside)
+        self.view.addSubview(roundButton)
+        
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(handleGesture))
+        swipeDown.direction = .down
+        self.dateView.addGestureRecognizer(swipeDown)
         
         entryListTbl.delegate = self
         entryListTbl.dataSource = self
@@ -58,78 +70,123 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         // Dispose of any resources that can be recreated.
     }
     
-    func dateChanged(_ datePicker: UIDatePicker) {
-        print("DATE :: \(datePicker.date)")
+    override func viewWillLayoutSubviews() {
+        
+        roundButton.layer.cornerRadius = roundButton.layer.frame.size.width/2
+        roundButton.backgroundColor = UIColor.lightGray
+        roundButton.clipsToBounds = true
+        roundButton.setImage(UIImage(named:"add.png"), for: .normal)
+        roundButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            roundButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
+            roundButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -70),
+            roundButton.widthAnchor.constraint(equalToConstant: 50),
+            roundButton.heightAnchor.constraint(equalToConstant: 50)])
     }
     
-    @IBAction func showDatePicker(_ sender: UIButton) {
-        let datePicker = UIDatePicker()//Date picker
-        datePicker.frame = CGRect(x: 0, y: 100, width: 320, height: 216)
-        datePicker.datePickerMode = .dateAndTime
-        datePicker.minuteInterval = 5
-        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
-        
-        let popoverView = UIView()
-        popoverView.backgroundColor = UIColor.clear
-        popoverView.addSubview(datePicker)
-        // here you can add tool bar with done and cancel buttons if required
-        
-        let popoverViewController = UIViewController()
-        popoverViewController.view = popoverView
-        popoverViewController.view.frame = CGRect(x: 0, y: 0, width: 320, height: 216)
-        popoverViewController.modalPresentationStyle = .popover
-        popoverViewController.preferredContentSize = CGSize(width: 320, height: 216)
-        popoverViewController.popoverPresentationController?.sourceView = sender // source button
-        popoverViewController.popoverPresentationController?.sourceRect = sender.bounds // source button bounds
-        self.present(popoverViewController, animated: true, completion: nil)
+    /** Action Handler for button **/
+    
+    @IBAction func ButtonClick(_ sender: UIButton){
+        showDatePick()
     }
     
-//    func layout(){
-//        let floaty = Floaty()
-//        let currentWindow = UIApplication.shared.keyWindow
-//        let fab = floaty(frame: CGRect(x: CGFloat(self.view.frame.size.width - 80), y: CGFloat(self.view.frame.size.height - 180), width: CGFloat(50), height: CGFloat(50)))
-//        fab.buttonColor = UIColor().HexToColor(hexString: accentColor)
-//        fab.plusColor = UIColor.white;
-//        fab.addItem(self.globalObjectCatalogProduct.languageBundle.localizedString(forKey: "sharetoother", value: "", table: nil), icon: UIImage(named: "icShare")){ item in
-//            self.sharetoOther();
-//        }
-//        fab.addItem(self.globalObjectCatalogProduct.languageBundle.localizedString(forKey: "addyourreview", value: "", table: nil), icon: UIImage(named: "ic_add_review")){ item in
-//            self.performSegue(withIdentifier: "addReviewSegue", sender: self)
-//        }
-//        fab.addItem(self.globalObjectCatalogProduct.languageBundle.localizedString(forKey: "addtowishlist", value: "", table: nil), icon: UIImage(named: "ic_wishlist_pdf")){ item in
-//            self.addToWishlist();
-//        }
-//        
-//        fab.fabDelegate = self
-//        fab.tag = 1300;
-//        currentWindow?.addSubview(fab)
-//    }
+    func handleGesture(gesture: UISwipeGestureRecognizer) -> Void {
+        if gesture.direction == UISwipeGestureRecognizerDirection.down {
+            print("Swipe Down")
+            self.dateTextField.resignFirstResponder()
+            self.dateView.isHidden = true
+        }
+    }
     
-    func insertNewObject(_ sender: Any) {
+    func showDatePick() {
         
-//        let date : Date = Date()
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "yyyy-MM-dd"
-//        let todaysDate = dateFormatter.string(from: date)
-//        let task = "entries"
-//        
-//        let params:NSMutableDictionary = ["task":task,"date":todaysDate]
-//        
-//        DispatchQueue.global(qos: .userInitiated).async {
-//            let res = MobileInterface().getDataFromTask(params)
-//            
-//            DispatchQueue.main.async {
-//                print(res)
-//                
-//                if let message = res["message"] {
-//                    let alert = UIAlertController(title: todaysDate, message: message as? String, preferredStyle: UIAlertControllerStyle.alert)
-//                    alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
-//                    self.present(alert, animated: true, completion: nil)
-//                }
-//                
-//                self.getUserData()
-//            }
-//        }
+        datePicker.datePickerMode = .date
+        datePicker.addTarget(self, action: #selector(FirstViewController.datePickerValueChanged(sender:)), for: UIControlEvents.valueChanged)
+        
+        dateTextField.inputView = datePicker
+        
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 40))
+        
+        toolbar.barStyle = .blackTranslucent
+        toolbar.tintColor = UIColor.white
+        
+        let todayBtn = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(FirstViewController.todayPressed(sender:)))
+        
+        let doneBtn = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(FirstViewController.donePressed(sender:)))
+        
+        let flexBtn = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+        
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width/3, height: 40))
+        
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = UIColor.white
+        label.textAlignment = NSTextAlignment.center
+        
+        let labelBtn = UIBarButtonItem(customView: label)
+        
+        toolbar.setItems([todayBtn, flexBtn, labelBtn, doneBtn], animated: true)
+        
+        dateTextField.inputAccessoryView = toolbar
+        
+        dateView.isHidden = false;
+        dateTextField.becomeFirstResponder()
+        
+        let formatter = DateFormatter()
+        
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        formatter.dateFormat = "yyyy-MM-dd"
+        dateTextField.text = formatter.string(from: NSDate() as Date)
+    }
+    
+    func donePressed(sender:UIBarButtonItem) {
+        let addAlert = UIAlertController(title: "Add Date Entry", message: "Are you sure?", preferredStyle: UIAlertControllerStyle.alert)
+        
+        addAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
+            let task = "entries"
+            
+            if let date = self.dateTextField.text {
+                let params:NSMutableDictionary = ["task":task,"date":date]
+                
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let _ = MobileInterface().getDataFromTask(params)
+                    
+                    DispatchQueue.main.async {
+                        self.dateTextField.resignFirstResponder()
+                        self.dateView.isHidden = true
+                        
+                        self.getUserData()
+                    }
+                }
+            }
+        }))
+        
+        addAlert.addAction(UIAlertAction(title: "No", style: .cancel, handler: { (action: UIAlertAction!) in
+            self.dateTextField.resignFirstResponder()
+            self.dateView.isHidden = true
+        }))
+        
+        present(addAlert, animated: true, completion: nil)
+    }
+    
+    func todayPressed(sender:UIBarButtonItem) {
+        let formatter = DateFormatter()
+        
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        formatter.dateFormat = "yyyy-MM-dd"
+        dateTextField.text = formatter.string(from: NSDate() as Date)
+        datePicker.date = formatter.date(from: dateTextField.text!)!
+    }
+    
+    func datePickerValueChanged(sender: UIDatePicker) {
+        
+        let formatter = DateFormatter()
+        
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        formatter.dateFormat = "yyyy-MM-dd"
+        dateTextField.text = formatter.string(from: sender.date)
     }
     
     var dataArray: Array<Dictionary<String,Any>> = []
@@ -393,7 +450,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let sectionData = self.sectionItems[section] as! NSArray
         
         if (sectionData.count == 0) {
-            let alert = UIAlertController(title: "Oops", message: "No fruits was added on this date", preferredStyle: UIAlertControllerStyle.alert)
+            let alert = UIAlertController(title: "Oops", message: "No fruit entry yet on this date, kindly TAP \"List\" to add items", preferredStyle: UIAlertControllerStyle.alert)
             alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
             self.present(alert, animated: true, completion: nil)
             

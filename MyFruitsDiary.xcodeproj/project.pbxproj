@@ -7,12 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6085694D2029B12900D600CD /* Floaty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 608569472029B12900D600CD /* Floaty.swift */; };
-		6085694E2029B12900D600CD /* FloatyDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 608569482029B12900D600CD /* FloatyDelegate.swift */; };
-		6085694F2029B12900D600CD /* FloatyItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 608569492029B12900D600CD /* FloatyItem.swift */; };
-		608569502029B12900D600CD /* FloatyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6085694A2029B12900D600CD /* FloatyManager.swift */; };
-		608569512029B12900D600CD /* FloatyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6085694B2029B12900D600CD /* FloatyViewController.swift */; };
-		608569522029B12900D600CD /* FloatyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6085694C2029B12900D600CD /* FloatyWindow.swift */; };
 		6085DA1220243D1D008ECB4E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6085DA1120243D1D008ECB4E /* AppDelegate.swift */; };
 		6085DA1420243D1D008ECB4E /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6085DA1320243D1D008ECB4E /* FirstViewController.swift */; };
 		6085DA1620243D1D008ECB4E /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6085DA1520243D1D008ECB4E /* SecondViewController.swift */; };
@@ -25,13 +19,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		608569462029B12900D600CD /* Floaty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Floaty.h; path = Libs/FloatingButton/Floaty.h; sourceTree = "<group>"; };
-		608569472029B12900D600CD /* Floaty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Floaty.swift; path = Libs/FloatingButton/Floaty.swift; sourceTree = "<group>"; };
-		608569482029B12900D600CD /* FloatyDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloatyDelegate.swift; path = Libs/FloatingButton/FloatyDelegate.swift; sourceTree = "<group>"; };
-		608569492029B12900D600CD /* FloatyItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloatyItem.swift; path = Libs/FloatingButton/FloatyItem.swift; sourceTree = "<group>"; };
-		6085694A2029B12900D600CD /* FloatyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloatyManager.swift; path = Libs/FloatingButton/FloatyManager.swift; sourceTree = "<group>"; };
-		6085694B2029B12900D600CD /* FloatyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloatyViewController.swift; path = Libs/FloatingButton/FloatyViewController.swift; sourceTree = "<group>"; };
-		6085694C2029B12900D600CD /* FloatyWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FloatyWindow.swift; path = Libs/FloatingButton/FloatyWindow.swift; sourceTree = "<group>"; };
 		6085DA0E20243D1D008ECB4E /* MyFruitsDiary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyFruitsDiary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6085DA1120243D1D008ECB4E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6085DA1320243D1D008ECB4E /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -60,23 +47,8 @@
 		608569442029B10700D600CD /* Libs */ = {
 			isa = PBXGroup;
 			children = (
-				608569452029B10E00D600CD /* FloatingButton */,
 			);
 			name = Libs;
-			sourceTree = "<group>";
-		};
-		608569452029B10E00D600CD /* FloatingButton */ = {
-			isa = PBXGroup;
-			children = (
-				608569462029B12900D600CD /* Floaty.h */,
-				608569472029B12900D600CD /* Floaty.swift */,
-				608569482029B12900D600CD /* FloatyDelegate.swift */,
-				608569492029B12900D600CD /* FloatyItem.swift */,
-				6085694A2029B12900D600CD /* FloatyManager.swift */,
-				6085694B2029B12900D600CD /* FloatyViewController.swift */,
-				6085694C2029B12900D600CD /* FloatyWindow.swift */,
-			);
-			name = FloatingButton;
 			sourceTree = "<group>";
 		};
 		6085DA0520243D1D008ECB4E = {
@@ -202,15 +174,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				608569522029B12900D600CD /* FloatyWindow.swift in Sources */,
-				608569502029B12900D600CD /* FloatyManager.swift in Sources */,
-				6085694D2029B12900D600CD /* Floaty.swift in Sources */,
-				6085694F2029B12900D600CD /* FloatyItem.swift in Sources */,
-				608569512029B12900D600CD /* FloatyViewController.swift in Sources */,
 				6085DA1620243D1D008ECB4E /* SecondViewController.swift in Sources */,
 				6085DA6F20260B3E008ECB4E /* EditDetailsViewController.swift in Sources */,
 				6085DA1220243D1D008ECB4E /* AppDelegate.swift in Sources */,
-				6085694E2029B12900D600CD /* FloatyDelegate.swift in Sources */,
 				6085DA1420243D1D008ECB4E /* FirstViewController.swift in Sources */,
 				6085DA71202723FD008ECB4E /* DetailsViewController.swift in Sources */,
 			);
