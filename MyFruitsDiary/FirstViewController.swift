@@ -7,12 +7,12 @@
 //
 
 import UIKit
-import braySdkframework
 
 class FruitsTableViewCell: UITableViewCell {
     @IBOutlet var fruitsType: UILabel!
     @IBOutlet var fruitCount: UILabel!
     @IBOutlet var fruitImage: UIImageView!
+    @IBOutlet weak var vitaminCount: UILabel!
     @IBOutlet var loadIcon: UIActivityIndicatorView!
 }
 
@@ -88,7 +88,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         showDatePick()
     }
     
-    func handleGesture(gesture: UISwipeGestureRecognizer) -> Void {
+    @objc func handleGesture(gesture: UISwipeGestureRecognizer) -> Void {
         if gesture.direction == UISwipeGestureRecognizerDirection.down {
 //            print("Swipe Down")
             self.dateTextField.resignFirstResponder()
@@ -137,7 +137,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         dateTextField.text = formatter.string(from: NSDate() as Date)
     }
     
-    func donePressed(sender:UIBarButtonItem) {
+    @objc func donePressed(sender:UIBarButtonItem) {
         let addAlert = UIAlertController(title: "Add Date Entry", message: "Are you sure?", preferredStyle: UIAlertControllerStyle.alert)
         
         addAlert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action: UIAlertAction!) in
@@ -167,7 +167,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         present(addAlert, animated: true, completion: nil)
     }
     
-    func todayPressed(sender:UIBarButtonItem) {
+    @objc func todayPressed(sender:UIBarButtonItem) {
         let formatter = DateFormatter()
         
         formatter.dateStyle = .medium
@@ -177,7 +177,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         datePicker.date = formatter.date(from: dateTextField.text!)!
     }
     
-    func datePickerValueChanged(sender: UIDatePicker) {
+    @objc func datePickerValueChanged(sender: UIDatePicker) {
         
         let formatter = DateFormatter()
         
@@ -390,6 +390,19 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
             cell.fruitCount.textColor = UIColor.white
             cell.fruitCount.text = "item count: " + String(describing:fCount)
             
+            for dic:Dictionary<String,Any> in self.itemsArray {
+                let type = dic["type"] as! String
+                if String(describing:type) == String(describing:fType) {
+                    let vit = dic["vitamins"] as! Int
+                    let count = fCount as! Int
+                    
+                    let totalVit = Int(vit) * Int(count)
+                    
+                    cell.vitaminCount.textColor = UIColor.white
+                    cell.vitaminCount.text = "total vitamin count: " + String(describing:totalVit)
+                }
+            }
+            
             downloadImage(imageName: fType as! String, cell: cell)
         }
 
@@ -404,7 +417,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     // MARK: - Expand / Collapse Methods
     
-    func sectionHeaderWasTouched(_ sender: UITapGestureRecognizer) {
+    @objc func sectionHeaderWasTouched(_ sender: UITapGestureRecognizer) {
         let headerView = sender.view as! UITableViewHeaderFooterView
         let section    = headerView.tag
         let eImageView = headerView.viewWithTag(kHeaderSectionTag + section) as? UIImageView

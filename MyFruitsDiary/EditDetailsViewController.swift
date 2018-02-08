@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import braySdkframework
 
 class EntryTableViewCell: UITableViewCell {
     @IBOutlet var entryId: UILabel!

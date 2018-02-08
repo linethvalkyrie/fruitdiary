@@ -13,9 +13,12 @@
 		6085DA1920243D1D008ECB4E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6085DA1720243D1D008ECB4E /* Main.storyboard */; };
 		6085DA1B20243D1D008ECB4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6085DA1A20243D1D008ECB4E /* Assets.xcassets */; };
 		6085DA1E20243D1D008ECB4E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6085DA1C20243D1D008ECB4E /* LaunchScreen.storyboard */; };
-		6085DA2720244106008ECB4E /* braySdkframework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6085DA2620244106008ECB4E /* braySdkframework.framework */; };
 		6085DA6F20260B3E008ECB4E /* EditDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6085DA6E20260B3E008ECB4E /* EditDetailsViewController.swift */; };
 		6085DA71202723FD008ECB4E /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6085DA70202723FD008ECB4E /* DetailsViewController.swift */; };
+		60AD1771202C285A00CA414C /* SBJSON in Resources */ = {isa = PBXBuildFile; fileRef = 60AD176D202C285A00CA414C /* SBJSON */; };
+		60AD1772202C285A00CA414C /* WebConnect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AD176E202C285A00CA414C /* WebConnect.swift */; };
+		60AD1773202C285A00CA414C /* WebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AD176F202C285A00CA414C /* WebService.swift */; };
+		60AD1774202C285A00CA414C /* MobileInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60AD1770202C285A00CA414C /* MobileInterface.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,9 +30,12 @@
 		6085DA1A20243D1D008ECB4E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6085DA1D20243D1D008ECB4E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6085DA1F20243D1D008ECB4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6085DA2620244106008ECB4E /* braySdkframework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = braySdkframework.framework; path = Libs/braySdkframework.framework; sourceTree = "<group>"; };
 		6085DA6E20260B3E008ECB4E /* EditDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditDetailsViewController.swift; sourceTree = "<group>"; };
 		6085DA70202723FD008ECB4E /* DetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
+		60AD176D202C285A00CA414C /* SBJSON */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SBJSON; path = Libs/NetworkClass/SBJSON; sourceTree = "<group>"; };
+		60AD176E202C285A00CA414C /* WebConnect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebConnect.swift; path = Libs/NetworkClass/WebConnect.swift; sourceTree = "<group>"; };
+		60AD176F202C285A00CA414C /* WebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebService.swift; path = Libs/NetworkClass/WebService.swift; sourceTree = "<group>"; };
+		60AD1770202C285A00CA414C /* MobileInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MobileInterface.swift; path = Libs/NetworkClass/MobileInterface.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,7 +43,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6085DA2720244106008ECB4E /* braySdkframework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,23 +75,15 @@
 		6085DA1020243D1D008ECB4E /* MyFruitsDiary */ = {
 			isa = PBXGroup;
 			children = (
+				60AD176C202C284F00CA414C /* Network */,
 				608569442029B10700D600CD /* Libs */,
 				6085DA6D20260B15008ECB4E /* Classes */,
-				6085DA25202440F1008ECB4E /* Frameworks */,
 				6085DA1720243D1D008ECB4E /* Main.storyboard */,
 				6085DA1A20243D1D008ECB4E /* Assets.xcassets */,
 				6085DA1C20243D1D008ECB4E /* LaunchScreen.storyboard */,
 				6085DA1F20243D1D008ECB4E /* Info.plist */,
 			);
 			path = MyFruitsDiary;
-			sourceTree = "<group>";
-		};
-		6085DA25202440F1008ECB4E /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				6085DA2620244106008ECB4E /* braySdkframework.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		6085DA6D20260B15008ECB4E /* Classes */ = {
@@ -99,6 +96,17 @@
 				6085DA70202723FD008ECB4E /* DetailsViewController.swift */,
 			);
 			name = Classes;
+			sourceTree = "<group>";
+		};
+		60AD176C202C284F00CA414C /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				60AD1770202C285A00CA414C /* MobileInterface.swift */,
+				60AD176D202C285A00CA414C /* SBJSON */,
+				60AD176E202C285A00CA414C /* WebConnect.swift */,
+				60AD176F202C285A00CA414C /* WebService.swift */,
+			);
+			name = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -134,6 +142,7 @@
 					6085DA0D20243D1D008ECB4E = {
 						CreatedOnToolsVersion = 8.3.3;
 						DevelopmentTeam = FLQHVGQ78W;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -162,6 +171,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6085DA1E20243D1D008ECB4E /* LaunchScreen.storyboard in Resources */,
+				60AD1771202C285A00CA414C /* SBJSON in Resources */,
 				6085DA1B20243D1D008ECB4E /* Assets.xcassets in Resources */,
 				6085DA1920243D1D008ECB4E /* Main.storyboard in Resources */,
 			);
@@ -175,10 +185,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				6085DA1620243D1D008ECB4E /* SecondViewController.swift in Sources */,
+				60AD1774202C285A00CA414C /* MobileInterface.swift in Sources */,
 				6085DA6F20260B3E008ECB4E /* EditDetailsViewController.swift in Sources */,
+				60AD1773202C285A00CA414C /* WebService.swift in Sources */,
 				6085DA1220243D1D008ECB4E /* AppDelegate.swift in Sources */,
 				6085DA1420243D1D008ECB4E /* FirstViewController.swift in Sources */,
 				6085DA71202723FD008ECB4E /* DetailsViewController.swift in Sources */,
+				60AD1772202C285A00CA414C /* WebConnect.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,6 +220,7 @@
 		6085DA2020243D1D008ECB4E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -229,8 +243,13 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -257,6 +276,7 @@
 		6085DA2120243D1D008ECB4E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -279,8 +299,13 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)",
+				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -307,10 +332,12 @@
 					"$(PROJECT_DIR)/MyFruitsDiary/Libs",
 				);
 				INFOPLIST_FILE = MyFruitsDiary/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.braysantos.MyFruitsDiary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -324,10 +351,12 @@
 					"$(PROJECT_DIR)/MyFruitsDiary/Libs",
 				);
 				INFOPLIST_FILE = MyFruitsDiary/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.braysantos.MyFruitsDiary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

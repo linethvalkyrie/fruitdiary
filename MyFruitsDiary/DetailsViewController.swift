@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import braySdkframework
 import Foundation
 
 extension NSCache {
@@ -66,7 +65,7 @@ class DetailsViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func dismissView() {
+    @objc func dismissView() {
         self.dismiss(animated: true, completion: {
             self.entryData.removeAll()
             self.itemData.removeAll()
